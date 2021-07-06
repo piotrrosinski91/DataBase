@@ -12,8 +12,12 @@ public class Main {
             ResultSet resultSet = statement.executeQuery("SELECT * from users");
 
             while(resultSet.next()){
-                String nameOfQuestion = resultSet.getString("username");
-                System.out.println(nameOfQuestion);
+                int id = resultSet.getInt("id");
+                String username = resultSet.getString("username");
+                int age = resultSet.getInt("age");
+                String city = resultSet.getString("city");
+                User user = new User(id, username, age, city);
+                System.out.println(user.toString());
             }
         }
             catch(SQLException e){
