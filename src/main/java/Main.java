@@ -1,16 +1,22 @@
 import lombok.RequiredArgsConstructor;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 public class Main {
+    private static Connection connection = JdbcConfig.getConnection();
+    private static Statement statement;
+    private static ResultSet resultSet;
+
     public static void main(String[] args) {
         try {
-            Connection connection = JdbcConfig.getConnection();
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * from users");
 
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT * from users");
-
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String username = resultSet.getString("username");
                 int age = resultSet.getInt("age");
@@ -36,10 +42,9 @@ public class Main {
 
             Statement statementAfterUserAdd = connection.createStatement();
             ResultSet resultsetAfterUserAdd = statementAfterUserAdd.executeQuery("SELECT * from users");
+            findYoungestUser(resultsetAfterUserAdd);
 
-
-
-            while(resultsetAfterUserAdd.next()){
+            while (resultsetAfterUserAdd.next()) {
                 int id = resultsetAfterUserAdd.getInt("id");
                 String username = resultsetAfterUserAdd.getString("username");
                 int age = resultsetAfterUserAdd.getInt("age");
@@ -49,10 +54,33 @@ public class Main {
             }
 
 
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-            catch(SQLException e){
-                e.printStackTrace();
+
+    }
+
+    public static void findYoungestUser(ResultSet resultset) throws SQLException {
+        ArrayList<Integer> listOfAges = new ArrayList<>();
+        while (resultset.next()) {
+            listOfAges.add(resultset.getInt("age"));
+        }
+        int youngestUSer = listOfAges.stream()
+                .min(Integer::compareTo)
+                .get();
+
+        resultSet = statement.executeQuery("SELECT * from users");
+        while (resultSet.next()) {
+            if (youngestUSer == resultSet.getInt("age")) {
+                System.out.println("The Youngest user:");
+                User user = new User(resultSet.getInt("id"), resultSet.getString("username"),
+                                     resultSet.getInt("age"), resultSet.getString("city"));
+                System.out.println(user.toString());
             }
+        }
 
     }
 }
+
+
+
