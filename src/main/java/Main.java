@@ -1,10 +1,6 @@
-import lombok.RequiredArgsConstructor;
-
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.stream.Stream;
+
 
 public class Main {
     private static Connection connection = JdbcConfig.getConnection();
@@ -24,15 +20,11 @@ public class Main {
                 User user = new User(id, username, age, city);
                 System.out.println(user.toString());
             }
-            System.out.println();
-
             User userIntoDB = new User("Kamila", 29, "Katowice");
 
-
             System.out.println();
             System.out.println();
             System.out.println();
-
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT into users(username, age, city) VALUES(?, ?, ?)");
             preparedStatement.setString(1, userIntoDB.getUsername());
@@ -51,6 +43,7 @@ public class Main {
                 String city = resultsetAfterUserAdd.getString("city");
                 User user = new User(id, username, age, city);
                 System.out.println(user.toString());
+                System.out.println();
             }
 
 
@@ -72,9 +65,11 @@ public class Main {
         resultSet = statement.executeQuery("SELECT * from users");
         while (resultSet.next()) {
             if (youngestUSer == resultSet.getInt("age")) {
-                System.out.println("The Youngest user:");
-                User user = new User(resultSet.getInt("id"), resultSet.getString("username"),
-                                     resultSet.getInt("age"), resultSet.getString("city"));
+                System.out.println("The Youngest user is:");
+                User user = new User(resultSet.getInt("id"),
+                        resultSet.getString("username"),
+                        resultSet.getInt("age"),
+                        resultSet.getString("city"));
                 System.out.println(user.toString());
             }
         }
