@@ -42,7 +42,6 @@ public class Main {
 
             Statement statementAfterUserAdd = connection.createStatement();
             ResultSet resultsetAfterUserAdd = statementAfterUserAdd.executeQuery("SELECT * from users");
-            findYoungestUser(resultsetAfterUserAdd);
 
             while (resultsetAfterUserAdd.next()) {
                 int id = resultsetAfterUserAdd.getInt("id");
@@ -53,28 +52,32 @@ public class Main {
                 System.out.println(user.toString());
             }
 
+            findYoungestUser();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
-    public static void findYoungestUser(ResultSet resultset) throws SQLException {
+    public static void findYoungestUser() throws SQLException {
         ArrayList<Integer> listOfAges = new ArrayList<>();
-        while (resultset.next()) {
-            listOfAges.add(resultset.getInt("age"));
+        Statement statement = connection.createStatement();
+        Statement statement1 = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * from users");
+        ResultSet resultSet1 = statement1.executeQuery("SELECT * from users");
+
+        while (resultSet.next()) {
+            listOfAges.add(resultSet.getInt("age"));
         }
         int youngestUSer = listOfAges.stream()
                 .min(Integer::compareTo)
                 .get();
 
-        resultSet = statement.executeQuery("SELECT * from users");
-        while (resultSet.next()) {
-            if (youngestUSer == resultSet.getInt("age")) {
+        while (resultSet1.next()) {
+            if (youngestUSer == resultSet1.getInt("age")) {
                 System.out.println("The Youngest user:");
-                User user = new User(resultSet.getInt("id"), resultSet.getString("username"),
-                                     resultSet.getInt("age"), resultSet.getString("city"));
+                User user = new User(resultSet1.getInt("id"), resultSet1.getString("username"),
+                                     resultSet1.getInt("age"), resultSet1.getString("city"));
                 System.out.println(user.toString());
             }
         }
