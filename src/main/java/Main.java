@@ -24,15 +24,12 @@ public class Main {
                 User user = new User(id, username, age, city);
                 System.out.println(user.toString());
             }
-            System.out.println();
 
             User userIntoDB = new User("Kamila", 29, "Katowice");
 
-
             System.out.println();
             System.out.println();
             System.out.println();
-
 
             PreparedStatement preparedStatement = connection.prepareStatement("INSERT into users(username, age, city) VALUES(?, ?, ?)");
             preparedStatement.setString(1, userIntoDB.getUsername());
@@ -42,7 +39,6 @@ public class Main {
 
             Statement statementAfterUserAdd = connection.createStatement();
             ResultSet resultsetAfterUserAdd = statementAfterUserAdd.executeQuery("SELECT * from users");
-            findYoungestUser(resultsetAfterUserAdd);
 
             while (resultsetAfterUserAdd.next()) {
                 int id = resultsetAfterUserAdd.getInt("id");
@@ -52,6 +48,7 @@ public class Main {
                 User user = new User(id, username, age, city);
                 System.out.println(user.toString());
             }
+            findYoungestUser();
 
 
         } catch (SQLException e) {
@@ -60,21 +57,24 @@ public class Main {
 
     }
 
-    public static void findYoungestUser(ResultSet resultset) throws SQLException {
+    public static void findYoungestUser() throws SQLException {
+        Statement statement = connection.createStatement();
+        Statement statement2 = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * from users");
+        ResultSet resultSet2 = statement2.executeQuery("SELECT * from users");
         ArrayList<Integer> listOfAges = new ArrayList<>();
-        while (resultset.next()) {
-            listOfAges.add(resultset.getInt("age"));
+        while (resultSet.next()) {
+            listOfAges.add(resultSet.getInt("age"));
         }
         int youngestUSer = listOfAges.stream()
                 .min(Integer::compareTo)
                 .get();
 
-        resultSet = statement.executeQuery("SELECT * from users");
-        while (resultSet.next()) {
-            if (youngestUSer == resultSet.getInt("age")) {
-                System.out.println("The Youngest user:");
-                User user = new User(resultSet.getInt("id"), resultSet.getString("username"),
-                                     resultSet.getInt("age"), resultSet.getString("city"));
+        while (resultSet2.next()) {
+            if (youngestUSer == resultSet2.getInt("age")) {
+                System.out.println("\nThe Youngest user:");
+                User user = new User(resultSet2.getInt("id"), resultSet2.getString("username"),
+                                     resultSet2.getInt("age"), resultSet2.getString("city"));
                 System.out.println(user.toString());
             }
         }
