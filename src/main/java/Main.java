@@ -50,19 +50,20 @@ public class Main {
             }
             findYoungestUser();
 
+            findYoungestUser();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public static void findYoungestUser() throws SQLException {
-        Statement statement = connection.createStatement();
-        Statement statement2 = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT * from users");
-        ResultSet resultSet2 = statement2.executeQuery("SELECT * from users");
         ArrayList<Integer> listOfAges = new ArrayList<>();
+        Statement statement = connection.createStatement();
+        Statement statement1 = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * from users");
+        ResultSet resultSet1 = statement1.executeQuery("SELECT * from users");
+
         while (resultSet.next()) {
             listOfAges.add(resultSet.getInt("age"));
         }
@@ -70,11 +71,12 @@ public class Main {
                 .min(Integer::compareTo)
                 .get();
 
-        while (resultSet2.next()) {
-            if (youngestUSer == resultSet2.getInt("age")) {
+        while (resultSet1.next()) {
+            if (youngestUSer == resultSet1.getInt("age")) {
                 System.out.println("\nThe Youngest user:");
-                User user = new User(resultSet2.getInt("id"), resultSet2.getString("username"),
-                                     resultSet2.getInt("age"), resultSet2.getString("city"));
+                User user = new User(resultSet1.getInt("id"), resultSet1.getString("username"),
+                                     resultSet1.getInt("age"), resultSet1.getString("city"));
+
                 System.out.println(user.toString());
             }
         }
